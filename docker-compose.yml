@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  api:
+    build: ./api
+    image: ghost/nestjs-sample-api
+    tty: true
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - type: bind
+        source: ./api
+        target: /api
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: mysql:8
+    restart: always
+    volumes:
+      - type: bind
+        source: ./db-data
+        target: /var/lib/mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: develop
+      MYSQL_USER: develop
+      MYSQL_PASSWORD: password
+    command: --default-authentication-plugin=mysql_native_password # passwordによる接続許可
+      
